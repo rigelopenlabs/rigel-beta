@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Rigel Beta &mdash; suscribete a las betas{% endblock %}
+{% block content %}
+  <p class="lead">Suscribete a las apps en desarrollo y recibe un correo cuando salga una nueva version. Doble opt-in: confirmas por correo antes de recibir nada.</p>
+
+  <div class="card">
+    <h2>Apps disponibles</h2>
+    {% if apps %}
+      {% for a in apps %}
+      <div class="app-row">
+        <div class="app-icon">{{ a.icon_emoji }}</div>
+        <div style="flex:1;">
+          <div class="app-name">{{ a.name }}
+            {% if a.is_public %}<span class="badge">publica</span>{% else %}<span class="badge">privada</span>{% endif %}
+          </div>
+          <div class="app-desc">{{ a.description }}</div>
+          <div class="ver">{% if a.latest_version %}v{{ a.latest_version }}{% else %}sin version aun{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="app-desc">No hay apps cargadas todavia.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Suscribirme</h2>
+    <form method="post" action="/subscribe">
+      <input type="email" name="email" placeholder="tu@correo.com" required>
+      {% for a in apps %}
+      <div class="check">
+        <input type="checkbox" id="app_{{ a.key }}" name="app_keys" value="{{ a.key }}">
+        <label for="app_{{ a.key }}">{{ a.icon_emoji }} {{ a.name }}</label>
+      </div>
+      {% endfor %}
+      <div style="margin-top:18px;">
+        <button class="cta" type="submit">Suscribirme</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

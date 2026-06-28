@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Rigel Beta{% endblock %}</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #111820;
+      --border: #1c2630;
+      --text: #c7d2dc;
+      --text-strong: #e7eef4;
+      --muted: #5b6b78;
+      --accent: #22d3ee;
+      --accent-dim: #0e7490;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px 80px; }
+    header.top {
+      display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px;
+    }
+    .brand { color: var(--accent); font-weight: 800; font-size: 26px; letter-spacing: .5px; }
+    .tag { color: var(--muted); font-size: 13px; }
+    .lead { color: var(--text); margin: 0 0 32px; }
+    .card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin: 0 0 24px;
+    }
+    .app-row { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .app-row:last-child { border-bottom: none; }
+    .app-icon { font-size: 26px; line-height: 1; padding-top: 2px; }
+    .app-name { color: var(--text-strong); font-weight: 700; font-size: 16px; }
+    .app-desc { color: var(--muted); font-size: 14px; margin: 2px 0 0; }
+    .ver { color: var(--accent); font-size: 12px; font-weight: 600; }
+    .badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); margin-left: 6px; }
+    .check { display: flex; align-items: center; gap: 10px; padding: 9px 0; }
+    .check input { width: 17px; height: 17px; accent-color: var(--accent); }
+    .check label { cursor: pointer; }
+    input[type=email] {
+      width: 100%; background: #0b1219; border: 1px solid var(--border);
+      color: var(--text-strong); padding: 12px 14px; border-radius: 8px; font-size: 15px;
+      margin: 0 0 16px;
+    }
+    input[type=email]:focus { outline: none; border-color: var(--accent); }
+    button.cta {
+      background: var(--accent); color: #06141a; font-weight: 700; border: none;
+      padding: 12px 24px; border-radius: 8px; font-size: 15px; cursor: pointer;
+    }
+    button.cta:hover { filter: brightness(1.08); }
+    h2 { color: var(--text-strong); font-size: 18px; margin: 0 0 14px; }
+    .footer { color: var(--muted); font-size: 12px; margin-top: 40px; }
+    .ok-icon { font-size: 44px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <span class="brand">RIGEL BETA</span>
+      <span class="tag">distribucion de betas de escritorio</span>
+    </header>
+    {% block content %}{% endblock %}
+    <div class="footer">Rigel Open Labs &middot; <a href="/">rigel-beta</a></div>
+  </div>
+</body>
+</html>

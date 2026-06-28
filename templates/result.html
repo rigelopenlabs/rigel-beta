@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} &mdash; Rigel Beta{% endblock %}
+{% block content %}
+  <div class="card" style="text-align:center;padding:48px 24px;">
+    <div class="ok-icon">&#10003;</div>
+    <h2 style="margin-top:14px;">{{ title }}</h2>
+    <p style="color:var(--text);max-width:440px;margin:8px auto 0;">{{ message }}</p>
+    <p style="margin-top:24px;"><a href="/">Volver al inicio</a></p>
+  </div>
+{% endblock %}

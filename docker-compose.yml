@@ -1,0 +1,21 @@
+services:
+  rigel-beta:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    image: rigel-beta:latest
+    restart: unless-stopped
+    ports:
+      - "9486:8000"
+    environment:
+      BETA_DB_PATH: /data/rigel-beta.db
+      # Set these for production (leave RESEND_API_KEY empty for DEV/no-send mode):
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      BETA_FROM: "${BETA_FROM:-Rigel Beta <beta@vivesincables.com>}"
+      BETA_ADMIN_KEY: "${BETA_ADMIN_KEY:-dev-admin-key}"
+      BASE_URL: "${BASE_URL:-http://localhost:9486}"
+    volumes:
+      - rigel_beta_data:/data
+
+volumes:
+  rigel_beta_data:
