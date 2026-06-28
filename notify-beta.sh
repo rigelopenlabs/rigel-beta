@@ -15,7 +15,7 @@
 #
 set -euo pipefail
 
-BETA_API_URL="${BETA_API_URL:-http://localhost:9486}"
+BETA_API_URL="${BETA_API_URL:-https://beta.vivesincables.com}"
 BETA_ADMIN_KEY="${BETA_ADMIN_KEY:-dev-admin-key}"
 
 usage() {
