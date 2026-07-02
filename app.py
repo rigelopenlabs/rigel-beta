@@ -159,6 +159,7 @@ class AppIn(BaseModel):
     latest_version: str = ""
     icon_emoji: str = ""
     is_public: bool = False
+    is_web: bool = False
 
 
 class ReleaseIn(BaseModel):
@@ -179,6 +180,7 @@ def api_upsert_app(payload: AppIn, x_api_key: str | None = Header(default=None))
         latest_version=payload.latest_version,
         icon_emoji=payload.icon_emoji,
         is_public=payload.is_public,
+        is_web=payload.is_web,
     )
     return a
 

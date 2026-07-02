@@ -11,6 +11,7 @@
         <div class="app-icon">{{ a.icon_emoji }}</div>
         <div style="flex:1;">
           <div class="app-name">{{ a.name }}
+            {% if a.is_web %}<span class="badge">web</span>{% endif %}
             {% if a.is_public %}<span class="badge">publica</span>{% else %}<span class="badge">privada</span>{% endif %}
           </div>
           <div class="app-desc">{{ a.description }}</div>

@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS apps (
     latest_version TEXT NOT NULL DEFAULT '',
     icon_emoji     TEXT NOT NULL DEFAULT '',
     is_public      INTEGER NOT NULL DEFAULT 0,
+    is_web         INTEGER NOT NULL DEFAULT 0,
     created_at     TEXT NOT NULL
 );
 
@@ -69,28 +70,32 @@ def get_conn():
 def init_db():
     with get_conn() as conn:
         conn.executescript(SCHEMA)
+        # Migration: add is_web to DBs created before the column existed.
+        cols = [r[1] for r in conn.execute("PRAGMA table_info(apps)").fetchall()]
+        if "is_web" not in cols:
+            conn.execute("ALTER TABLE apps ADD COLUMN is_web INTEGER NOT NULL DEFAULT 0")
 
 
 # ---------- apps ----------
 
 def upsert_app(key, name, description="", download_url="", latest_version="",
-               icon_emoji="", is_public=False):
+               icon_emoji="", is_public=False, is_web=False):
     with get_conn() as conn:
         existing = conn.execute("SELECT key FROM apps WHERE key = ?", (key,)).fetchone()
         if existing:
             conn.execute(
                 """UPDATE apps SET name=?, description=?, download_url=?,
-                   latest_version=?, icon_emoji=?, is_public=? WHERE key=?""",
+                   latest_version=?, icon_emoji=?, is_public=?, is_web=? WHERE key=?""",
                 (name, description, download_url, latest_version, icon_emoji,
-                 1 if is_public else 0, key),
+                 1 if is_public else 0, 1 if is_web else 0, key),
             )
         else:
             conn.execute(
                 """INSERT INTO apps (key, name, description, download_url,
-                   latest_version, icon_emoji, is_public, created_at)
-                   VALUES (?,?,?,?,?,?,?,?)""",
+                   latest_version, icon_emoji, is_public, is_web, created_at)
+                   VALUES (?,?,?,?,?,?,?,?,?)""",
                 (key, name, description, download_url, latest_version, icon_emoji,
-                 1 if is_public else 0, now()),
+                 1 if is_public else 0, 1 if is_web else 0, now()),
             )
         # Read back within the same connection so we see the pending write.
         row = conn.execute("SELECT * FROM apps WHERE key = ?", (key,)).fetchone()

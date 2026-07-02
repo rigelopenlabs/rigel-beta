@@ -94,7 +94,7 @@ def new_version_html(app, version: str, download_url: str, notes: str,
   {app.get("icon_emoji","")} {app["name"]} &mdash; nueva version disponible</p>
 <p style="margin:0 0 16px;">Ya esta lista la version <b style="color:#22d3ee;">v{version}</b>.</p>
 {notes_block}
-<p style="margin:0 0 8px;">{_btn(download_url, "Descargar")}</p>
+<p style="margin:0 0 8px;">{_btn(download_url, "Abrir" if app.get("is_web") else "Descargar")}</p>
 <p style="margin:18px 0 0;color:#5b6b78;font-size:12px;">Liga directa: {download_url}</p>"""
     footer = (
         'Recibes esto porque te suscribiste a la beta. '
