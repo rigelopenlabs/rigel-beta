@@ -12,6 +12,10 @@ No Postgres. Host port **9486** -> internal uvicorn **8000**.
 1. A visitor picks one or more apps on the landing page and submits their email.
 2. They get a **double opt-in** email with a single confirm link covering all the apps
    they selected (`/confirm/{token}`). Subscriptions stay `pending` until confirmed.
+> **One-shot release:** `publish-release.sh` publishes a DMG to its channel and
+> then announces it — see "Publishing a release" below. `notify-beta.sh` is the
+> announce-only step it calls.
+
 3. When you publish a new release (via `POST /api/releases` or `notify-beta.sh`),
    every **confirmed** subscriber of that app gets a "new version available" email
    with a download link and a personal unsubscribe link (`/unsubscribe/{token}`).
@@ -127,3 +131,41 @@ export BETA_ADMIN_KEY=dev-admin-key              # must match server
 (no credentials/network): landing 200, subscribe -> confirm -> release (sends in
 DEV mode) -> unsubscribe, plus that all `/api/*` endpoints reject a missing/wrong
 `X-API-Key`, and app upsert idempotency.
+
+## Publishing a release (`publish-release.sh`)
+
+One command: publish the notarized DMG (built by the app's `build-dmg.sh`) to its
+channel, then announce it to beta subscribers. The announce fires **after** the
+download URL is live (never before), so testers never get a stale link.
+
+**Public app** (served from `releases.vivesincables.com`, e.g. NOCBoard Energía/Datos, DoctorNet, Atlas):
+
+```bash
+NOTARIZE=1 ~/developer/NOCBoard-Energia/build-dmg.sh          # build first
+./publish-release.sh --mode public \
+    --repo ~/developer/NOCBoard-Energia \
+    --beta-key nocboard-energia \
+    --subdir nocboard \
+    --replace NOCBoard-Energia-v3.9.6.dmg \
+    --notes "Fixes from the field test"
+```
+
+It copies `dist/<name>-vX.Y.Z.dmg` + `<name>-latest.dmg` into
+`rigel-releases/dl/<subdir>/`, commits + pushes, triggers the Dokploy deploy (if
+`RIGEL_DEPLOY_HOOK` is set — otherwise trigger it in Dokploy/MCP), polls the public
+`-latest` URL until it serves the new build (sha match), then runs `notify-beta.sh`.
+
+**Drive-only app** (access-controlled, e.g. NOCBoard WL/CX/CX-Datos):
+
+```bash
+./publish-release.sh --mode drive \
+    --repo ~/developer/NOCBoard \
+    --beta-key nocboard-wl \
+    --download-url "https://drive.google.com/…" \
+    --replace NOCBoard-v3.7.2.dmg
+```
+
+Env: `RIGEL_DEPLOY_HOOK` (Dokploy compose webhook, optional), `BETA_ADMIN_KEY`
+(required for a real notify), `BETA_API_URL` (default prod), `SKIP_NOTIFY=1`
+(publish only). Use `--dry-run` to preview. Real emails only send once the server
+has a `RESEND_API_KEY`; otherwise the notify is logged server-side (DEV mode).
