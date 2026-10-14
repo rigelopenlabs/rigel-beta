@@ -1,5 +1,7 @@
 # rigel-beta
 
+Reglas del repo y mapa de documentos: [AGENTS.md](AGENTS.md).
+
 A "TestFlight for Rigel desktop apps". Users subscribe (by email) to in-development
 apps and receive a notification email whenever a new version ships. Built for the
 NOCBoard family but generic for any Rigel desktop app.
