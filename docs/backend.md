@@ -39,15 +39,16 @@ No hay cuentas, sesiones ni roles de usuario. Hay dos actores.
 | Visitante o tester | Ver la landing, suscribirse, confirmar y cancelar con su token | Llamar a `/api/*` | Sin revisión: las rutas públicas están abiertas |
 | Administrador (llave de API) | Todo `/api/*`: alta de apps, releases con envío de correos, listar suscriptores | Sin otros límites | `require_admin` en [app.py](../app.py), llamado al inicio de cada ruta `/api/*` |
 
-`is_public` está declarado en el modelo de `apps` pero ninguna ruta lo aplica; ver Riesgos abiertos en [AGENTS.md](../AGENTS.md#riesgos-abiertos).
+Sobre `is_public`: [AGENTS.md, «Riesgos abiertos»](../AGENTS.md#riesgos-abiertos).
 
 ## Integraciones
 
 | Sistema | Para qué | Credencial (entrada en el gestor) | Si falla… |
 | --- | --- | --- | --- |
-| Resend | Enviar los correos de confirmación y de nueva versión ([README, «Resend setup»](../README.md#resend-setup-production-email)) | [POR CONFIRMAR: entrada en el gestor de `RESEND_API_KEY`] | Un envío fallido se imprime en el log y no rompe la petición; `/api/releases` no lo cuenta como enviado. Sin llave: [AGENTS.md, «Riesgos abiertos»](../AGENTS.md#riesgos-abiertos). |
+| Resend | Enviar los correos de confirmación y de nueva versión ([README, «Resend setup»](../README.md#resend-setup-production-email)) | [POR CONFIRMAR: entrada en el gestor de `RESEND_API_KEY`] [POR CONFIRMAR: si el dominio de envío está verificado en Resend] | Un envío fallido se imprime en el log y no rompe la petición; `/api/releases` no lo cuenta como enviado. Sin llave: [AGENTS.md, «Riesgos abiertos»](../AGENTS.md#riesgos-abiertos). |
 | Dokploy | Corre el servicio ([README, «Deploy on Dokploy»](../README.md#deploy-on-dokploy-dp01)) | [POR CONFIRMAR: entrada en el gestor de Dokploy] | Sin servicio, no hay landing ni avisos. |
-| Servidor de releases (`rigel-releases`) | Aloja los DMG públicos que `publish-release.sh` sube | [POR CONFIRMAR: entrada en el gestor y repo donde vive `rigel-releases`] | `publish-release.sh` se detiene antes de avisar. |
+| Servidor de releases (`rigel-releases`) | Aloja los DMG públicos que `publish-release.sh` sube | [POR CONFIRMAR: entrada en el gestor y repo donde vive `rigel-releases`] [POR CONFIRMAR: entrada en el gestor de `RIGEL_DEPLOY_HOOK`, el webhook de Dokploy que usa `publish-release.sh`] | `publish-release.sh` se detiene antes de avisar. |
+| Scripts de aviso | [notify-beta.sh](../notify-beta.sh) y [publish-release.sh](../publish-release.sh) llaman a `/api/releases` ([README, «Config»](../README.md#config-env-vars-dev-defaults)) | Llave de administración (`BETA_ADMIN_KEY`): [POR CONFIRMAR: entrada en el gestor] | Sin llave válida, la API responde 401 y no se avisa. |
 
 ## Despliegue y entornos
 
