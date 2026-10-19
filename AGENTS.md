@@ -1,7 +1,7 @@
 # Rigel Beta (MQ-38)
 
 Servicio tipo TestFlight: los testers se suscriben por correo a las apps de escritorio y reciben aviso de cada versión nueva. Mesquite (recibido de Rigel Open Labs el 12 de octubre de 2026). Nivel 1, Producción, validado.
-Ficha: MQ-38 en el registro de fichas de Mesquite AI. Responsable técnico: Por definir. Valida: por definir. Revisado: 2026-10-13.
+Ficha: MQ-38 en el registro de fichas de Mesquite AI. Responsable técnico y quién valida: [POR CONFIRMAR: la ficha dice «Por definir»]. Revisado: 2026-10-13.
 
 ## Stack
 
@@ -62,5 +62,5 @@ Detalle en la revisión de seguridad de valores por defecto (13 oct 2026). Ruta 
 - Baja · [email_resend.py](email_resend.py) · `notes`, `version`, `name` y `download_url` van sin escapar en el HTML del correo; `download_url` acepta cualquier esquema.
 - Baja · [email_resend.py](email_resend.py), [app.py](app.py) · sin llave de Resend nada se envía pero la API responde que sí; los correos de destino quedan en el log (dato personal).
 - Baja · [Dockerfile.prod](Dockerfile.prod) · sin `.dockerignore` (`COPY . .` puede meter `.env` o `.db` locales) y el proceso corre como root.
-- Baja · [publish-release.sh](publish-release.sh) · `--beta-key` es la `app_key` pero se confunde con la llave de administración, y se imprime.
+- Baja · [publish-release.sh](publish-release.sh) · `--beta-key` se confunde con la llave de administración y se imprime ([detalle](docs/backend.md#contratos-con-otros-sistemas)).
 - Datos personales · base SQLite de producción (fuera del repo) · correos de testers.

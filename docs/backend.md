@@ -14,14 +14,13 @@ Dos scripts acompañan al servicio: [notify-beta.sh](../notify-beta.sh) (avisa u
 
 Esquema y migración viven dentro de [db.py](../db.py): la constante `SCHEMA` y la función `init_db`. No hay herramienta de migraciones. Una columna nueva se agrega con un `ALTER TABLE` condicional dentro de `init_db`, como se hizo con `is_web`.
 
-El modelo del [README](../README.md#data-model-sqlite) omite la columna `is_web` de `apps` (aparece en `SCHEMA` y en el cuerpo de `POST /api/apps`).
+El modelo del [README](../README.md#data-model-sqlite) omite la columna `is_web` de `apps` (aparece en `SCHEMA` y en el cuerpo de `POST /api/apps`). Estados, alta por clave, confirmación y releases están en el README: [modelo de datos](../README.md#data-model-sqlite) y [endpoints](../README.md#endpoints).
 
 | Entidad | Para qué | Reglas que no se ven en el esquema |
 | --- | --- | --- |
-| apps | Catálogo de apps (DMG o web) | Alta por clave, sin duplicar. Cada arranque vuelve a cargar el catálogo de `seed.py`: sobrescribe nombre, descripción y visibilidad de las apps del catálogo, y conserva la última versión y, si el catálogo no trae URL, la que dejó un release. |
+| apps | Catálogo de apps (DMG o web) | Cada arranque vuelve a cargar el catálogo de `seed.py`: sobrescribe nombre, descripción y visibilidad de las apps del catálogo, y conserva la última versión y, si el catálogo no trae URL, la que dejó un release. |
 | subscribers | Un correo, una sola vez | El correo se guarda en minúsculas. |
-| subscriptions | Un correo suscrito a una app | Estados `pending`, `confirmed`, `unsubscribed`. Volver a suscribirse a una app no confirmada genera token nuevo; una ya confirmada no cambia. Confirmar un token confirma todas las pendientes de ese correo. |
-| releases | Historial de versiones | Cada release actualiza la última versión de la app, y su URL solo si viene con una. |
+| subscriptions | Un correo suscrito a una app | Volver a suscribirse a una app no confirmada genera token nuevo; una ya confirmada no cambia. |
 
 ## API
 
@@ -46,7 +45,7 @@ No hay cuentas, sesiones ni roles de usuario. Hay dos actores.
 
 | Sistema | Para qué | Credencial (entrada en el gestor) | Si falla… |
 | --- | --- | --- | --- |
-| Resend | Enviar los correos de confirmación y de nueva versión ([README, «Resend setup»](../README.md#resend-setup-production-email)) | [POR CONFIRMAR: entrada en el gestor de `RESEND_API_KEY`] | Un envío fallido se imprime en el log y no rompe la petición; `/api/releases` no lo cuenta como enviado. Sin llave, el servicio queda en modo DEV: no envía nada. |
+| Resend | Enviar los correos de confirmación y de nueva versión ([README, «Resend setup»](../README.md#resend-setup-production-email)) | [POR CONFIRMAR: entrada en el gestor de `RESEND_API_KEY`] | Un envío fallido se imprime en el log y no rompe la petición; `/api/releases` no lo cuenta como enviado. Sin llave: [AGENTS.md, «Riesgos abiertos»](../AGENTS.md#riesgos-abiertos). |
 | Dokploy | Corre el servicio ([README, «Deploy on Dokploy»](../README.md#deploy-on-dokploy-dp01)) | [POR CONFIRMAR: entrada en el gestor de Dokploy] | Sin servicio, no hay landing ni avisos. |
 | Servidor de releases (`rigel-releases`) | Aloja los DMG públicos que `publish-release.sh` sube | [POR CONFIRMAR: entrada en el gestor y repo donde vive `rigel-releases`] | `publish-release.sh` se detiene antes de avisar. |
 
